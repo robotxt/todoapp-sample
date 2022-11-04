@@ -11,6 +11,8 @@ django-extensions = "*"
 djangorestframework = "*"
 markdown = "*"
 django-filter = "*"
+flake8 = "*"
+coverage = "*"
 
 [dev-packages]
 

@@ -15,3 +15,6 @@ shell:
 		python todo/manage.py shell_plus
 
 
+.PHONY: lint
+lint:
+	docker-compose run --rm --no-deps $(CONTAINER) flake8 .

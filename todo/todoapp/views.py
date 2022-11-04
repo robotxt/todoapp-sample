@@ -7,7 +7,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.response import Response
 from rest_framework import status
 
-from todoapp.task import NewTasks, Tasks, UserTasks
+from todoapp.task import NewTasks, UserTasks
 from django.contrib.auth.models import User
 from todoapp.models import Task
 from todoapp.serializer import (LoginSerializer, TaskSerializer,
