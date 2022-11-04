@@ -12,6 +12,15 @@ def generate_task_uid() -> str:
     return str(uuid.uuid4())
 
 
+def get_task_by_uid(task_id) -> Task:
+    try:
+        task = Task.objects.get(uid=task_id)
+    except Task.DoesNotExist:
+        raise Exception("Task not found")
+
+    return task
+
+
 class TaskStatus(Enum):
     PENDING = 1
     COMPLETE = 2

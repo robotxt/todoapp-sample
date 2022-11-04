@@ -7,9 +7,8 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.response import Response
 from rest_framework import status
 
-from todoapp.task import NewTasks, UserTasks
+from todoapp.task import NewTasks, UserTasks, get_task_by_uid
 from django.contrib.auth.models import User
-from todoapp.models import Task
 from todoapp.serializer import (LoginSerializer, TaskSerializer,
                                 QueryTaskSerializer, UpdateTaskSerializer)
 from todoapp.auth import generate_user_token
@@ -53,7 +52,12 @@ class TaskApi(APIView):
         serializer.is_valid(raise_exception=True)
 
         task_id = serializer.validated_data.get('task_id')
-        task = Task.objects.get(uid=task_id)
+
+        try:
+            task = get_task_by_uid(task_id)
+        except Exception as e:
+            return Response({"error": str(e)},
+                            status=status.HTTP_400_BAD_REQUEST)
 
         return Response(
             {
@@ -85,9 +89,13 @@ class TaskApi(APIView):
 
         data = serializer.validated_data
 
-        task = Task.objects.get(uid=data['task_id'])
-        t = UserTasks(task=task, user=request.user)
+        try:
+            task = get_task_by_uid(data['task_id'])
+        except Exception as e:
+            return Response({'error': str(e)},
+                            status=status.HTTP_400_BAD_REQUEST)
 
+        t = UserTasks(task=task, user=request.user)
         title = data.get('title', None)
         description = data.get('description', None)
         priority = data.get('priority', None)
@@ -129,7 +137,11 @@ class TaskApi(APIView):
 
         data = serializer.validated_data
 
-        task = Task.objects.get(uid=data['task_id'])
+        try:
+            task = get_task_by_uid(data['task_id'])
+        except Exception as e:
+            return Response({'error': str(e)},
+                            status=status.HTTP_400_BAD_REQUEST)
 
         t = UserTasks(task=task, user=request.user)
         t.delete()
