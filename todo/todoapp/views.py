@@ -53,7 +53,6 @@ class TaskApi(APIView):
         serializer.is_valid(raise_exception=True)
 
         task_id = serializer.validated_data.get('task_id')
-        logger.info("Task id: %s", task_id)
         task = Task.objects.get(uid=task_id)
 
         return Response(
@@ -77,6 +76,7 @@ class TaskApi(APIView):
                         description=data['description'],
                         priority=data['priority']).create()
 
+        logger.info("New Task is created: %s", task.uid)
         return Response({'task_uid': task.uid}, status=status.HTTP_200_OK)
 
     def put(self, request):
@@ -94,18 +94,23 @@ class TaskApi(APIView):
         task_status = data.get('status', None)
 
         if title:
+            logger.info("task title updated..")
             t.update_title(title=title)
 
         if description:
+            logger.info("task description updated..")
             t.update_description(description=description)
 
         if priority:
+            logger.info("task priority updated..")
             t.update_priority(priority=priority)
 
         if task_status and task_status.upper() in ['COMPLETED', 'FINISHED']:
+            logger.info("task status to completed")
             t.status_complete()
 
         if task_status and task_status.upper() in ['PENDING']:
+            logger.info("task status to pending")
             t.status_pending()
 
         return Response(
