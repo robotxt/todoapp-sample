@@ -57,7 +57,11 @@ class Tasks(ABC):
         pass
 
     @abstractmethod
-    def complete(self) -> Task:
+    def status_complete(self) -> Task:
+        pass
+
+    @abstractmethod
+    def status_pending(self) -> Task:
         pass
 
 
@@ -87,8 +91,14 @@ class UserTasks(Tasks):
 
         return self.task
 
-    def complete(self):
-        self.task.status = TaskStatus.DELETED.name
+    def status_complete(self):
+        self.task.status = TaskStatus.COMPLETE.name
+        self.task.save()
+
+        return self.task
+
+    def status_pending(self):
+        self.task.status = TaskStatus.PENDING.name
         self.task.save()
 
         return self.task
