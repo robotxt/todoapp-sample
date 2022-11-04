@@ -19,8 +19,8 @@ docker-compose up --build
 ```
 POST: localhost:9090/api/v1/login/
 {
-			"email": <email>,
-			"password": <password>
+    "email": <email>,
+    "password": <password>
 }
 
 Response: {
