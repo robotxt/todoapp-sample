@@ -1,0 +1,30 @@
+version: '3.7'
+
+services:
+    web:
+        build: .
+        container_name: todo_web
+        command: bash -c "
+                    python todo/manage.py migrate && 
+                    python todo/manage.py runserver 0.0.0.0:9090
+                "
+        env_file: .env
+        volumes:
+            - .:/code
+        ports:
+            - "9090:9090"
+        tty: true
+        stdin_open: true
+        depends_on:
+            - todo_postgres 
+
+    todo_postgres:
+        image: postgres:12.5-alpine
+        ports:
+            - "5432:5432"
+        environment:
+            POSTGRES_HOST_AUTH_METHOD: trust
+            POSTGRES_USER: root
+            POSTGRES_PASSWORD: rootpassword
+            POSTGRES_DB: todo_db 
+

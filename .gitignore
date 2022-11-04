@@ -1,0 +1,26 @@
+# Distribution / packaging
+.Python
+.DS_store
+env/
+bin/
+profile/
+build/
+develop-eggs/
+eggs/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+dump.rdb
+*.pyc
+supervisord.pid
+typings
+.mypy_cache
+
+# Unit test / coverage reports
+.coverage
+
+.env
