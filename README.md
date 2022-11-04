@@ -24,7 +24,7 @@ POST: localhost:9090/api/v1/login/
 }
 
 Response: {
-		"token": <user_token>
+    "token": <user_token>
 }
 ```
 
