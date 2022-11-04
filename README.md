@@ -11,7 +11,7 @@ mv sample.env .env
 ### Run docker compose
 
 ```
-docker-compose up --build
+docker-compose up --build  // localhost:9090
 ```
 
 ## Login API:
