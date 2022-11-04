@@ -39,7 +39,7 @@ class LoginApi(APIView):
         token = generate_user_token(user)
 
         return Response({
-            'token': token[0].key,
+            'token': token.key,
         }, status=status.HTTP_200_OK)
 
 
@@ -52,14 +52,15 @@ class TaskApi(APIView):
         serializer.is_valid(raise_exception=True)
 
         task_id = serializer.validated_data.get('task_id')
-
+        logger.info("Task id: %s", task_id)
         task = Task.objects.get(uid=task_id)
 
         return Response(
             {
                 'title': task.title,
                 'description': task.description,
-                'priority': task.priority
+                'priority': task.priority,
+                'status': task.status
             },
             status=status.HTTP_200_OK)
 
@@ -72,6 +73,6 @@ class TaskApi(APIView):
         task = NewTasks(user=request.user,
                         title=data['title'],
                         description=data['description'],
-                        priority=data['priority'])
+                        priority=data['priority']).create()
 
         return Response({'task_uid': task.uid}, status=status.HTTP_200_OK)
