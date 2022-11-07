@@ -25,3 +25,13 @@ lint:
 test:
 	docker-compose run --rm --no-deps $(TEST_ENVIRONMENT) $(CONTAINER) \
 		$(TEST_SCRIPT) $(TEST_ARGS)
+
+
+
+# GITHUB workflow run test
+.PHONY: githubworkflow
+githubworkflow:
+	SECRET_KEY=abc \
+						 ENVIRONMENT=test \
+						 $(TEST_SCRIPT) todoapp
+
