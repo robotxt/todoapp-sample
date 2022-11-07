@@ -6,7 +6,7 @@ from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.response import Response
-from rest_framework import serializers, status
+from rest_framework import status
 
 from todoapp.task import NewTasks, UserTasks, get_task_by_uid
 from django.contrib.auth.models import User
@@ -55,7 +55,7 @@ class RegistrationApi(APIView):
 
         data = serializer.validated_data
 
-        if User.objects.get(email=data['email']).exists():
+        if User.objects.filter(email=data['email']).exists():
             return Response({'error': 'Email already exists.'},
                             status=status.HTTP_400_BAD_REQUEST)
 
@@ -67,7 +67,7 @@ class RegistrationApi(APIView):
             last_name=data['lastname'])
 
         token = generate_user_token(new_user)
-        return Response({'token': token.key}, status=status.HTTP_200_OK)
+        return Response({'token': token.key}, status=status.HTTP_201_CREATED)
 
 
 class TaskApi(APIView):
@@ -108,7 +108,7 @@ class TaskApi(APIView):
                         priority=data['priority']).create()
 
         logger.info("New Task is created: %s", task.uid)
-        return Response({'task_uid': task.uid}, status=status.HTTP_200_OK)
+        return Response({'task_uid': task.uid}, status=status.HTTP_201_CREATED)
 
     def put(self, request):
         serializer = UpdateTaskSerializer(data=request.data)
