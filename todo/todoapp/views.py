@@ -66,6 +66,8 @@ class RegistrationApi(APIView):
             first_name=data['firstname'],
             last_name=data['lastname'])
 
+        logger.info("New user created: %s", new_user.email)
+
         token = generate_user_token(new_user)
         return Response({'token': token.key}, status=status.HTTP_201_CREATED)
 
