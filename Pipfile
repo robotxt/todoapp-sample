@@ -13,6 +13,7 @@ markdown = "*"
 django-filter = "*"
 flake8 = "*"
 coverage = "*"
+factory-boy = "*"
 
 [dev-packages]
 
