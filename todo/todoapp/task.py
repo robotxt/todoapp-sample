@@ -1,5 +1,5 @@
 import uuid
-from abc import ABC, abstractmethod
+from abc import ABC
 from dataclasses import dataclass, field
 from typing import Optional
 from enum import Enum
@@ -8,23 +8,25 @@ from django.contrib.auth.models import User
 from todoapp.models import Task
 
 
+class TaskStatus(Enum):
+    PENDING = 1
+    COMPLETE = 2
+    DELETED = 3
+
+
 def generate_task_uid() -> str:
     return str(uuid.uuid4())
 
 
 def get_task_by_uid(task_id) -> Task:
     try:
-        task = Task.objects.get(uid=task_id)
+        task = Task.objects.get(
+            uid=task_id,
+            status__in=[TaskStatus.PENDING.name, TaskStatus.COMPLETE.name])
     except Task.DoesNotExist:
         raise Exception("Task not found")
 
     return task
-
-
-class TaskStatus(Enum):
-    PENDING = 1
-    COMPLETE = 2
-    DELETED = 3
 
 
 @dataclass
