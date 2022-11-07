@@ -36,6 +36,23 @@ Response: {
 }
 ```
 
+## Registration API:
+
+```
+POST: localhost:9090/api/v1/registration/
+{
+    "email": "fake-email@example.com",
+    "password": "fake-password",
+    "firstname": "bob",
+    "lastname": "johnsons"
+}
+
+Response: {
+    "token": <user_token>
+}
+```
+
+
 ## Task API:
 
 get task
