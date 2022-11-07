@@ -14,6 +14,14 @@ mv sample.env .env
 docker-compose up --build  // localhost:9090
 ```
 
+
+### Run sample test via docker
+
+```
+make test TEST_ARGS=todoapp
+```
+
+
 ## Login API:
 
 ```
