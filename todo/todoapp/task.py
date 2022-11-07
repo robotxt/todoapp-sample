@@ -49,30 +49,6 @@ class Tasks(ABC):
     task: Task
     user: User
 
-    @abstractmethod
-    def update_title(self, title: str) -> Task:
-        pass
-
-    @abstractmethod
-    def update_description(self, description: str) -> Task:
-        pass
-
-    @abstractmethod
-    def update_priority(self, priority: bool) -> Task:
-        pass
-
-    @abstractmethod
-    def delete(self) -> Task:
-        pass
-
-    @abstractmethod
-    def status_complete(self) -> Task:
-        pass
-
-    @abstractmethod
-    def status_pending(self) -> Task:
-        pass
-
 
 class UserTasks(Tasks):
 

@@ -6,6 +6,13 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField(required=True)
 
 
+class RegistrationSerializer(serializers.Serializer):
+    email = serializers.CharField(required=True)
+    password = serializers.CharField(required=True)
+    firstname = serializers.CharField(required=True)
+    lastname = serializers.CharField(required=True)
+
+
 class TaskSerializer(serializers.Serializer):
     title = serializers.CharField(required=True)
     description = serializers.CharField(required=False)

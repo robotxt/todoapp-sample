@@ -1,3 +1,4 @@
+import uuid
 import logging
 from rest_framework.views import APIView
 from rest_framework.authentication import TokenAuthentication
@@ -5,12 +6,13 @@ from rest_framework.authentication import SessionAuthentication
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.response import Response
-from rest_framework import status
+from rest_framework import serializers, status
 
 from todoapp.task import NewTasks, UserTasks, get_task_by_uid
 from django.contrib.auth.models import User
 from todoapp.serializer import (LoginSerializer, TaskSerializer,
-                                QueryTaskSerializer, UpdateTaskSerializer)
+                                QueryTaskSerializer, UpdateTaskSerializer,
+                                RegistrationSerializer)
 from todoapp.auth import generate_user_token
 
 logger = logging.getLogger(__name__)
@@ -21,6 +23,7 @@ class InvalidCredentials(AuthenticationFailed):
 
 
 class LoginApi(APIView):
+    """ Should have basic authentication for app verfication"""
 
     def post(self, request):
         serializer = LoginSerializer(data=request.data)
@@ -41,6 +44,30 @@ class LoginApi(APIView):
         return Response({
             'token': token.key,
         }, status=status.HTTP_200_OK)
+
+
+class RegistrationApi(APIView):
+    """ Should have basic authentication for app verification"""
+
+    def post(self, request):
+        serializer = RegistrationSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        data = serializer.validated_data
+
+        if User.objects.get(email=data['email']).exists():
+            return Response({'error': 'Email already exists.'},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        new_user = User.objects.create_user(  # type: ignore
+            username=str(uuid.uuid4()),
+            email=data['email'],
+            password=data['password'],
+            first_name=data['firstname'],
+            last_name=data['lastname'])
+
+        token = generate_user_token(new_user)
+        return Response({'token': token.key}, status=status.HTTP_200_OK)
 
 
 class TaskApi(APIView):
