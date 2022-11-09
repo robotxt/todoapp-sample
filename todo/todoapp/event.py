@@ -33,7 +33,7 @@ def _log__create_task(task: Task, user) -> TaskLog:
         value=f"{user.first_name} created the tasks {task.uid}")
 
 
-def subscribe(event_type: str, fn):
+def _subscribe(event_type: str, fn):
     has_event = subscribers.get(event_type, None)
 
     if not has_event:
@@ -45,8 +45,8 @@ def subscribe(event_type: str, fn):
 class Events:
 
     def __init__(self):
-        subscribe(EventTypes.UPDATE_TASK_LOG.name, _log__update_task)
-        subscribe(EventTypes.CREATE_NEW_TASK.name, _log__create_task)
+        _subscribe(EventTypes.UPDATE_TASK_LOG.name, _log__update_task)
+        _subscribe(EventTypes.CREATE_NEW_TASK.name, _log__create_task)
 
     def run_event(self, event_type: EventTypes, task: Task, user: User):
         if event_type.name not in subscribers:
