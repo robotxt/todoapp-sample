@@ -11,3 +11,12 @@ class Task(models.Model):
     description = models.TextField()
     priority = models.BooleanField(default=False)
     status = models.CharField(max_length=20)
+
+
+class TaskLog(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+    uid = models.TextField(null=False, unique=True)
+    tag = models.CharField(max_length=100)
+    task = models.ForeignKey(Task, on_delete=models.CASCADE, null=True)
+    value = models.TextField()

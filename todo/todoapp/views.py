@@ -14,6 +14,7 @@ from todoapp.serializer import (LoginSerializer, TaskSerializer,
                                 QueryTaskSerializer, UpdateTaskSerializer,
                                 RegistrationSerializer)
 from todoapp.auth import generate_user_token
+from todoapp.event import Events, EventTypes
 
 logger = logging.getLogger(__name__)
 
@@ -149,6 +150,9 @@ class TaskApi(APIView):
         if task_status and task_status.upper() in ['PENDING']:
             logger.info("task status to pending")
             t.status_pending()
+
+        event = Events()
+        event.run_event(EventTypes.UPDATE_TASK_LOG, t.task, request.user)
 
         return Response(
             {
