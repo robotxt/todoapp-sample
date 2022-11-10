@@ -14,6 +14,7 @@ from todoapp.serializer import (LoginSerializer, TaskSerializer,
                                 QueryTaskSerializer, UpdateTaskSerializer,
                                 RegistrationSerializer)
 from todoapp.auth import generate_user_token
+from todoapp.events import EventTypes, Event
 
 logger = logging.getLogger(__name__)
 
@@ -109,6 +110,8 @@ class TaskApi(APIView):
                         description=data['description'],
                         priority=data['priority']).create()
 
+        Event().run_event(EventTypes.CREATE_NEW_TASK, task, request.user)
+
         logger.info("New Task is created: %s", task.uid)
         return Response({'task_uid': task.uid}, status=status.HTTP_201_CREATED)
 
@@ -149,6 +152,8 @@ class TaskApi(APIView):
         if task_status and task_status.upper() in ['PENDING']:
             logger.info("task status to pending")
             t.status_pending()
+
+        Event().run_event(EventTypes.UPDATE_TASK_LOG, t.task, request.user)
 
         return Response(
             {
