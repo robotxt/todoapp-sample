@@ -110,8 +110,7 @@ class TaskApi(APIView):
                         description=data['description'],
                         priority=data['priority']).create()
 
-        event = Event()
-        event.run_event(EventTypes.CREATE_NEW_TASK, task, request.user)
+        Event().run_event(EventTypes.CREATE_NEW_TASK, task, request.user)
 
         logger.info("New Task is created: %s", task.uid)
         return Response({'task_uid': task.uid}, status=status.HTTP_201_CREATED)
@@ -154,8 +153,7 @@ class TaskApi(APIView):
             logger.info("task status to pending")
             t.status_pending()
 
-        event = Event()
-        event.run_event(EventTypes.UPDATE_TASK_LOG, t.task, request.user)
+        Event().run_event(EventTypes.UPDATE_TASK_LOG, t.task, request.user)
 
         return Response(
             {

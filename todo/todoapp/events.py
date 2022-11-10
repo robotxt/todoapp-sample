@@ -28,7 +28,7 @@ def _log__create_task(task: Task, user) -> TaskLog:
         uid=str(uuid.uuid4()),
         tag="user_task_created",
         task=task,
-        value=f"{user.first_name} created the tasks {task.uid}")
+        value=f"{user.first_name} created the tasks '{task.title}'")
 
 
 class Event:
