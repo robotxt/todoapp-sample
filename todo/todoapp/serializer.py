@@ -24,7 +24,9 @@ class UpdateTaskSerializer(serializers.Serializer):
     title = serializers.CharField(required=False)
     description = serializers.CharField(required=False)
     priority = serializers.BooleanField(required=False)
-    status = serializers.CharField(required=False)
+    status = serializers.ChoiceField([('pending', 'pending'),
+                                      ('completed', 'completed'),
+                                      ('finished', 'finished')])
 
 
 class QueryTaskSerializer(serializers.Serializer):
