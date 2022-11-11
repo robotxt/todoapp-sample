@@ -50,7 +50,7 @@ class Tasks(ABC):
     user: User
 
 
-class UserUpdateTasks(Tasks):
+class UserTasks(Tasks):
 
     def validate_permission(self) -> bool:
         if self.user.pk == self.task.user.pk:

@@ -8,7 +8,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.response import Response
 from rest_framework import status
 
-from todoapp.task import NewTasks, UserUpdateTasks, get_task_by_uid
+from todoapp.task import NewTasks, UserTasks, get_task_by_uid
 from django.contrib.auth.models import User
 from todoapp.serializer import (LoginSerializer, TaskSerializer,
                                 QueryTaskSerializer, UpdateTaskSerializer,
@@ -127,7 +127,7 @@ class TaskApi(APIView):
             return Response({'error': str(e)},
                             status=status.HTTP_400_BAD_REQUEST)
 
-        t = UserUpdateTasks(task=task, user=request.user)
+        t = UserTasks(task=task, user=request.user)
         title = data.get('title', None)
         description = data.get('description', None)
         priority = data.get('priority', None)
@@ -167,7 +167,7 @@ class TaskApi(APIView):
             return Response({'error': str(e)},
                             status=status.HTTP_400_BAD_REQUEST)
 
-        t = UserUpdateTasks(task=task, user=request.user)
+        t = UserTasks(task=task, user=request.user)
         t.validate_permission()
         t.update_task(status="DELETE")
 
