@@ -85,6 +85,8 @@ class UserTasks(Tasks):
                 self.task.status = TaskStatus.PENDING.name
             elif new_status in ['DELETED', 'DELETE']:
                 self.task.status = TaskStatus.DELETED.name
+            else:
+                raise ValueError("Invalid task status.")
 
         self.task.save()
         return self.task
