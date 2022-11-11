@@ -52,38 +52,39 @@ class Tasks(ABC):
 
 class UserTasks(Tasks):
 
-    def update_title(self, title: str) -> Task:
-        self.task.title = title
+    def validate_permission(self) -> bool:
+        if self.user.pk == self.task.user.pk:
+            self._validated_user_permission = True
+            return self._validated_user_permission
+
+        raise AssertionError("User permission not allowed")
+
+    def update_task(self,
+                    title=None,
+                    description=None,
+                    priority=None,
+                    status=None) -> Task:
+        if not hasattr(self, '_validated_user_permission'):
+            msg = 'You must call `.validate_permission()` before accessing `.update_task`.'
+            raise AssertionError(msg)
+
+        if title:
+            self.task.title = title
+
+        if description:
+            self.task.description = description
+
+        if priority:
+            self.task.priority = priority
+
+        if status:
+            new_status = status.upper()
+            if new_status in ['COMPLETED', 'FINISHED']:
+                self.task.status = TaskStatus.COMPLETE.name
+            elif new_status in ['PENDING']:
+                self.task.status = TaskStatus.PENDING.name
+            elif new_status in ['DELETED', 'DELETE']:
+                self.task.status = TaskStatus.DELETED.name
+
         self.task.save()
-
-        return self.task
-
-    def update_description(self, description: str) -> Task:
-        self.task.description = description
-        self.task.save()
-
-        return self.task
-
-    def update_priority(self, priority: bool) -> Task:
-        self.task.priority = priority
-        self.task.save()
-
-        return self.task
-
-    def delete(self):
-        self.task.status = TaskStatus.DELETED.name
-        self.task.save()
-
-        return self.task
-
-    def status_complete(self):
-        self.task.status = TaskStatus.COMPLETE.name
-        self.task.save()
-
-        return self.task
-
-    def status_pending(self):
-        self.task.status = TaskStatus.PENDING.name
-        self.task.save()
-
         return self.task

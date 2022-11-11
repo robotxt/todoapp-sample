@@ -133,25 +133,15 @@ class TaskApi(APIView):
         priority = data.get('priority', None)
         task_status = data.get('status', None)
 
-        if title:
-            logger.info("task title updated..")
-            t.update_title(title=title)
-
-        if description:
-            logger.info("task description updated..")
-            t.update_description(description=description)
-
-        if priority:
-            logger.info("task priority updated..")
-            t.update_priority(priority=priority)
-
-        if task_status and task_status.upper() in ['COMPLETED', 'FINISHED']:
-            logger.info("task status to completed")
-            t.status_complete()
-
-        if task_status and task_status.upper() in ['PENDING']:
-            logger.info("task status to pending")
-            t.status_pending()
+        try:
+            t.validate_permission()
+            t.update_task(title=title,
+                          description=description,
+                          priority=priority,
+                          status=task_status)
+        except Exception as e:
+            return Response({"errors": str(e)},
+                            status=status.HTTP_400_BAD_REQUEST)
 
         Event().run_event(EventTypes.UPDATE_TASK_LOG, t.task, request.user)
 
@@ -178,7 +168,8 @@ class TaskApi(APIView):
                             status=status.HTTP_400_BAD_REQUEST)
 
         t = UserTasks(task=task, user=request.user)
-        t.delete()
+        t.validate_permission()
+        t.update_task(status="DELETE")
 
         return Response({'msg': 'Successfully Deleted'},
                         status=status.HTTP_200_OK)
