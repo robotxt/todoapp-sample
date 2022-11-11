@@ -8,7 +8,7 @@ from rest_framework.exceptions import AuthenticationFailed
 from rest_framework.response import Response
 from rest_framework import status
 
-from todoapp.task import NewTasks, UserTasks, get_task_by_uid
+from todoapp.task import NewTasks, UserUpdateTasks, get_task_by_uid
 from django.contrib.auth.models import User
 from todoapp.serializer import (LoginSerializer, TaskSerializer,
                                 QueryTaskSerializer, UpdateTaskSerializer,
@@ -127,31 +127,21 @@ class TaskApi(APIView):
             return Response({'error': str(e)},
                             status=status.HTTP_400_BAD_REQUEST)
 
-        t = UserTasks(task=task, user=request.user)
+        t = UserUpdateTasks(task=task, user=request.user)
         title = data.get('title', None)
         description = data.get('description', None)
         priority = data.get('priority', None)
         task_status = data.get('status', None)
 
-        if title:
-            logger.info("task title updated..")
-            t.update_title(title=title)
-
-        if description:
-            logger.info("task description updated..")
-            t.update_description(description=description)
-
-        if priority:
-            logger.info("task priority updated..")
-            t.update_priority(priority=priority)
-
-        if task_status and task_status.upper() in ['COMPLETED', 'FINISHED']:
-            logger.info("task status to completed")
-            t.status_complete()
-
-        if task_status and task_status.upper() in ['PENDING']:
-            logger.info("task status to pending")
-            t.status_pending()
+        try:
+            t.validate_permission()
+            t.update_task(title=title,
+                          description=description,
+                          priority=priority,
+                          status=task_status)
+        except Exception as e:
+            return Response({"errors": str(e)},
+                            status=status.HTTP_400_BAD_REQUEST)
 
         Event().run_event(EventTypes.UPDATE_TASK_LOG, t.task, request.user)
 
@@ -177,8 +167,9 @@ class TaskApi(APIView):
             return Response({'error': str(e)},
                             status=status.HTTP_400_BAD_REQUEST)
 
-        t = UserTasks(task=task, user=request.user)
-        t.delete()
+        t = UserUpdateTasks(task=task, user=request.user)
+        t.validate_permission()
+        t.update_task(status="DELETE")
 
         return Response({'msg': 'Successfully Deleted'},
                         status=status.HTTP_200_OK)
