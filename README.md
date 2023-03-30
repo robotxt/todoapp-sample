@@ -8,7 +8,7 @@ Rename sample.env to .env
 mv sample.env .env
 ```
 
-### Run docker compose
+### Run docker compose (local development)
 
 ```
 docker-compose up --build  // localhost:9090
